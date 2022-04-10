@@ -1,65 +1,73 @@
-
-   
 const express = require('express');
-const logger = require('./logger')
 
 const router = express.Router();
 
-// problem 1
-router.get('/movies', function (req, res) {
-    let arr = ["Rang De Basanti", "The Shining", "Lord Of The Rings", "Batman Begins"]
-    res.send(arr)
-});
-
-// Problem 2 & 3 
-
-router.get('/movies/:indexNumber', function (req, res) {
-    let arr1 = ["Rang De Basanti", "The Shining", "Lord Of The Rings", "Batman Begins"]
-    let indexNumber = req.params.indexNumber
-    if (indexNumber > arr1.length - 1) {
-        res.send("Value is above than index number")
+let players = [
+    {
+        "name": "Sachin",
+        "dob": "1/1/1975",
+        "gender": "male",
+        "city": "Mumbai",
+        "sports": [
+            "Cricket"
+        ]
+    },
+    {
+        "name": "Rahul",
+        "dob": "1/1/1995",
+        "gender": "male",
+        "city": "punjab",
+        "sports": [
+            "swimming"
+        ]
+    },
+    {
+        "name": "Sumit",
+        "dob": "23/02/1997",
+        "gender": "male",
+        "city": "Patna",
+        "sports": [
+            "VolleyBall"
+        ]
+    },
+    {
+        "name": "ronaldo",
+        "dob": "1/1/1991",
+        "gender": "male",
+        "city": "Delhi",
+        "sports": [
+            "footbal"
+        ]
+    },
+    {
+        "name": "Abhishek",
+        "dob": "1/1/1980",
+        "gender": "male",
+        "city": "Kolkata",
+        "sports": [
+            "Chess"
+        ]
     }
-    else {
-        res.send(arr1[indexNumber])
-    }
-});
 
-// Problem 4
+];
 
-router.get('/films', function (req, res) {
-    let pqrs = [{ id: 1, name: "The Shining" }, { id: 2, name: "Incendies" }, { id: 3, name: "Rang de Basanti" }, { id: 4, name: "Finding Nemo" }]
+router.post('/players', function (req, res) {
 
-    res.send(pqrs)
-});
+    // LOGIC 
 
-// Problem 5
+    for (let i = 0; i < players.length; i++) {
+        if (req.body.name === players[i].name) {
+            return res.send("Player already rejister try diffrent name")
 
-router.get('/film/:filmid', function (req, res) {
-    const Fnames = [{
-        'id': 1,
-        'name': 'The Shining'
-    }, {
-        'id': 2,
-        'name': 'Incendies'
-    }, {
-        'id': 3,
-        'name': 'Rang de Basanti'
-    }, {
-        'id': 4,
-        'name': 'Finding Nemo'
-    }]
-    let a;
-    let n = req.params.filmid
-    for (let i = 0; i < Fnames.length; i++) {
-        if(n>Fnames[i].id){
-            a="No movie exists with this id"
         }
-        if(n== Fnames[i].id){
-            a= Fnames[i]
-        }
     }
-    res.send(a)
+    let newPlayer = req.body
+    players.push(newPlayer)
+
+    res.send({ UpdatedList: players })
+
+
+    // res.send(  { data: players , status: true }  )
 });
 
 module.exports = router;
-// adding this comment for no reason
