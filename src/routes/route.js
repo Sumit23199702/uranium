@@ -17,7 +17,7 @@ router.post("/createBook", BookController.createBook  )
 
 
 
-// router.post("/createUser", UserController.createUser  )
+router.post("/npx nodemon index.js", UserController.createUser  )
 // router.get("/getUsersData", UserController.getUsersData)
 
 
