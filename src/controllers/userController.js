@@ -36,7 +36,7 @@ const createUser = async function (req, res) {
         }
 
         if (!isValidPhone.test(phone)) {
-            return res.status(400).send({ status: false, message: "Please enter a valid phone number" });
+            return res.status(400).send({ status: false, message: "Please enter a valid phone number" })
         }
 
         let duplicatePhone = await userModel.findOne({ phone });
