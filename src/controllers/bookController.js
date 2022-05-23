@@ -3,6 +3,38 @@ const bookModel = require("../models/bookModels");
 const reviewModel = require("../models/reviewModels")
 const { isValidRequestBody, isValidData, isValidISBN, isValidReleasedAt, isValidObjectId } = require("../utils/validator");
 
+
+// ASSIGNMENT/AWS-S3-PROMISE 
+const aws = require("aws-sdk");
+
+aws.config.update({
+  accessKeyId: "AKIAY3L35MCRVFM24Q7U",  // id
+  secretAccessKey: "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",  // secret password
+  region: "ap-south-1" 
+});
+
+
+// This function uploads file to AWS and gives back the url for the file
+let uploadFile = async (file) => {
+  return new Promise(function (resolve, reject) { 
+    
+    let s3 = new aws.S3({ apiVersion: "2006-03-01" });
+    var uploadParams = {
+      ACL: "public-read", 
+      Bucket: "classroom-training-bucket", 
+      Key: "Sumit/" + file.originalname, 
+      Body: file.buffer, 
+    };
+
+    s3.upload(uploadParams , function (err, data) {
+      if (err) {
+        return reject( { "error": err });
+      }
+      return resolve(data.Location);  
+    });
+  });
+};
+
 //============================================< CREATE BOOK >===============================================//
 
 const createBook = async function (req, res) {
@@ -14,6 +46,17 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, message: "No data provided" });
         }
 
+        
+        let files = req.files
+        
+        if(!files || files.length==0){ 
+           return res.status(400).send({ status : false,  msg: "No file found" })
+        }
+            console.log(files)
+            const uploadedFileURL = await uploadFile(files[0])
+            console.log(uploadedFileURL)
+            requestBody.bookCover = uploadedFileURL
+            
         if (!isValidData(title)) {
             return res.status(400).send({ status: false, message: "Title is Required" });
         }
@@ -40,9 +83,9 @@ const createBook = async function (req, res) {
             return res.status(404).send({ status: false, msg: "User does not exists" });
         }
 
-        if (userId != req.userId) {
-            return res.status(403).send({ status: false, message: "You Are Not Unauthorized" });
-        }
+        // if (userId != req.userId) {
+        //     return res.status(403).send({ status: false, message: "You Are Not Unauthorized" });
+        // }
 
         if (!isValidData(ISBN)) {
             return res.status(400).send({ status: false, message: "ISBN is Required" });
